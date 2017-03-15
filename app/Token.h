@@ -159,4 +159,4 @@ private:
 	std::function<double(double, double)> m_function;
 };
 
-#endif TOKEN_H
+#endif //TOKEN_H
