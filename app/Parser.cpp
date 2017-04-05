@@ -10,15 +10,10 @@
 Parser::Parser()
 {
     m_tokens["x"] = new VariableToken("x");
-
 	m_tokens["("] = new Token(Token::Type::OpenBracket, "(");
 	m_tokens[")"] = new Token(Token::Type::CloseBracket, ")");
-
 	m_tokens[","] = new Token(Token::Type::Comma, ",");
 	m_tokens[";"] = new Token(Token::Type::Comma, ",");
-
-    m_tokens["$"] = new OperatorToken(OperatorType::Unary, 2, OperatorAssociativity::Left, [](double a, double b) { return +a; }, "+");
-    m_tokens["#"] = new OperatorToken(OperatorType::Unary, 2, OperatorAssociativity::Left, [](double a, double b) { return -a; }, "-");
 
 	AddOperator("+", OperatorType::Binary, 0, OperatorAssociativity::Left, [](double a, double b) { return a + b; });
 	AddOperator("-", OperatorType::Binary, 0, OperatorAssociativity::Left, [](double a, double b) { return a - b; });
@@ -27,6 +22,9 @@ Parser::Parser()
 	AddOperator("/", OperatorType::Binary, 1, OperatorAssociativity::Left, [](double a, double b) { return a / b; });
 	AddOperator("\\", OperatorType::Binary, 1, OperatorAssociativity::Left, [](double a, double b) { return a / b; });
 	AddOperator("%", OperatorType::Binary, 1, OperatorAssociativity::Left, [](double a, double b) { return std::fmod(a, b); });
+
+	AddOperator("$", OperatorType::Unary, 2, OperatorAssociativity::Left, [](double a, double b) { return +a; });
+	AddOperator("#", OperatorType::Unary, 2, OperatorAssociativity::Left, [](double a, double b) { return -a; });
 
 	AddOperator("^", OperatorType::Binary, 3, OperatorAssociativity::Right, [](double a, double b) { return std::pow(a, b); });
 
@@ -39,6 +37,7 @@ Parser::Parser()
     AddFunction("exp", FunctionType::Unary, [](double a, double b) { return std::pow(M_E, a); });
 
 	AddFunction("max", FunctionType::Binary, [](double a, double b) { return std::fmax(a, b); });
+	AddFunction("min", FunctionType::Binary, [](double a, double b) { return std::fmin(a, b); });
 
 	AddFunction("ln", FunctionType::Unary, [](double a, double b) { return std::log(a); });
 	AddFunction("lg", FunctionType::Unary, [](double a, double b) { return std::log10(a); });

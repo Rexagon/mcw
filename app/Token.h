@@ -27,6 +27,8 @@ public:
 
 	Type GetType() const { return m_type; }
 
+	virtual ~Token() {}
+
 	virtual double GetValue() const { return 0.0; }
 
 	std::string ToString() const { return m_token; }

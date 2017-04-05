@@ -3,14 +3,7 @@
 #include <QMessageBox>
 #include <ui_MainWindow.h>
 
-static const QString textAbout = R"(Курсовая про программированию за 2 семестр первого курса по программированию.
-Выполнил студент группы ИВБО-01-16 Калинин И.М.
-
-Эта программа находит корни любого уравнения, приведённого к виду f(x)=0 в заданном диапазоне с указанной точностью и методом.
-Допустимые операторы: +, -, *, / или \, %, ^
-Допустимые функции: abs, sqrt, cbrt, exp, ln, lg, log(a,b), max(a,b), sin, cos, tg, ctg, arcsin, arccos, arctg, arcctg
-Допустимые константы: e, pi)";
-
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -52,10 +45,11 @@ void MainWindow::OnButtonFindRootsClicked()
         std::vector<double> roots;
 
         double step = 0.01;
-        for (double x = minX; x < maxX; x += step) {
+		for (double x = minX; x < maxX; x += step) {
             if (function(x) == 0) roots.push_back(x);
-            else if (function(x) * function(x + step) < 0) {
+			else if (function(x) * function(x + step) < 0) {
                 double root;
+
                 switch (method) {
                 case 0:
                     root = function.FindRootIterations(x, x + step, epsilon);
@@ -74,10 +68,17 @@ void MainWindow::OnButtonFindRootsClicked()
             }
         }
 
-        Log(expression + " = 0\n" +
-            "X: [" + QString::number(minX) + ", " + QString::number(maxX) + "], " +
-            "Ɛ = " + QString::number(epsilon) + "\n" +
-            "Метод: " + ui->cmbMethod->currentText());
+        QString log = expression;
+        expression += " = 0\nX: [" + QString::number(minX) + ", " + QString::number(maxX) + "], ";
+        expression += "Ɛ = " + QString::number(epsilon) + "\n";
+        expression += "Метод: " + ui->cmbMethod->currentText() + "\n";
+        expression += "Корни:\n";
+
+        for (auto root : roots) {
+            expression += "  " + QString::number(root) + "\n";
+        }
+
+        Log(expression);
     }
     catch(const std::exception& e) {
         QMessageBox mb;
@@ -89,7 +90,13 @@ void MainWindow::OnButtonFindRootsClicked()
 
 void MainWindow::OnButtonAboutClicked()
 {
-    QMessageBox::about(nullptr, "О программе", textAbout);
+	QMessageBox::about(nullptr, "О программе", R"(Курсовая про программированию за 2 семестр первого курса по программированию.
+											   Выполнил студент группы ИВБО-01-16 Калинин И.М.
+
+											   Эта программа находит корни любого уравнения, приведённого к виду f(x)=0 в заданном диапазоне с указанной точностью и методом.
+											   Допустимые операторы: +, -, *, / или \, %, ^
+											   Допустимые функции: abs, sqrt, cbrt, exp, ln, lg, log(a,b), max(a,b), sin, cos, tg, ctg, arcsin, arccos, arctg, arcctg
+											   Допустимые константы: e, pi)");
 }
 
 void MainWindow::Log(const QString &text)

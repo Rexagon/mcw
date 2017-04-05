@@ -12,6 +12,7 @@ public:
 	Parser();
 	~Parser();
 
+
 	void AddConstant(const std::string& token, double value);
 	void AddOperator(const std::string& token, OperatorType operatorType, int priority, OperatorAssociativity associativity, std::function<double(double, double)> function);
 	void AddFunction(const std::string& token, FunctionType functionType, std::function<double(double, double)> function);
