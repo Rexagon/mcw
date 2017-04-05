@@ -100,11 +100,11 @@ public:
 
 	double GetValue() const override {
 		if (m_rightChild == nullptr) {
-			throw std::runtime_error("operator must have at least one operand");
+            throw std::runtime_error("оператор должен иметь хотя бы один операнд");
 		}
 
 		if (m_operatorType == OperatorType::Binary) {
-			if (!m_leftChild) throw std::runtime_error("binary operator must have two operands");
+            if (!m_leftChild) throw std::runtime_error("бинарный оператор должен иметь 2 операнда");
 
 			return m_function(m_leftChild->GetValue(), m_rightChild->GetValue());
 		}
@@ -140,11 +140,11 @@ public:
 
 	double GetValue() const override {
 		if (m_rightChild == nullptr) {
-			throw std::runtime_error("function must have at least one operand");
+            throw std::runtime_error("функция должна иметь хотя бы 1 аргумент");
 		}
 
 		if (m_functionType == FunctionType::Binary) {
-			if (!m_leftChild) throw std::runtime_error("binary function must have two operands");
+            if (!m_leftChild) throw std::runtime_error("функция должна иметь 2 аргумента");
 
 			return m_function(m_leftChild->GetValue(), m_rightChild->GetValue());
 		}
