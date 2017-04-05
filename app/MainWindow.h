@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QTextStream>
 
 #include "Parser.h"
 
@@ -22,7 +21,7 @@ private slots:
     void OnButtonFindRootsClicked();
     void OnButtonAboutClicked();
 private:
-    void Log(const QString& text);
+	void Log(const QString& text);
 
     Ui::MainWindow *ui;
     Parser m_parser;

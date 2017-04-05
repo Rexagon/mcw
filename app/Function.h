@@ -5,6 +5,22 @@
 
 #include <vector>
 
+struct Root
+{
+	Root(double x, int numIterations) :
+		x(x), numIterations(numIterations) {}
+
+	double x;
+	int numIterations;
+};
+
+enum RootsFindingMethod
+{
+	IterationsMethod,
+	DihotomyMethod,
+	NewtonsMethod
+};
+
 class Function
 {
 public:
@@ -13,18 +29,17 @@ public:
 
 	~Function() { for (auto& it : m_tokens) delete it; }
 
-	double operator()(double x) { return Evaluate(x); }
-
     double Evaluate(double x);
-
     double Derivative(double x, double epsilon = 0.00001);
 
-    double FindRootIterations(double minX, double maxX, double epsilon);
+	std::vector<Root> FindRoots(double minX, double maxX, double epsilon, int method);
 
-    double FindRootDihotomy(double minX, double maxX, double epsilon);
-
-    double FindRootNewton(double minX, double maxX, double epsilon);
+	double operator()(double x) { return Evaluate(x); }
 private:
+	Root Iterations(double minX, double maxX, double epsilon);
+	Root Dihotomy(double minX, double maxX, double epsilon);
+	Root Newton(double minX, double maxX, double epsilon);
+
 	Token* m_expression;
 	std::vector<Token*> m_tokens;
 };

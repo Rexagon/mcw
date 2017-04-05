@@ -1,14 +1,22 @@
 #include "MainWindow.h"
 
+#include <QTextStream>
 #include <QMessageBox>
+#include <QScrollBar>
+#include <QFile>
 #include <ui_MainWindow.h>
-
-#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+	QFile file("./history.txt");
+	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		QTextStream textStream(&file);
+		textStream.setCodec("UTF-8");
+		ui->txtHistory->append(textStream.readAll());
+	}
 
     connect(ui->btnFindRoots, SIGNAL(clicked(bool)), this, SLOT(OnButtonFindRootsClicked()));
     connect(ui->btnAbout, SIGNAL(triggered(bool)), this, SLOT(OnButtonAboutClicked()));
@@ -27,8 +35,6 @@ void MainWindow::OnButtonFindRootsClicked()
             throw std::runtime_error("Введите выражение");
         }
 
-        int method = ui->cmbMethod->currentIndex();
-
         bool ok;
 
         double minX = ui->txtMinX->text().toDouble(&ok);
@@ -40,43 +46,21 @@ void MainWindow::OnButtonFindRootsClicked()
         double epsilon = ui->txtEpsilon->text().toDouble(&ok);
         if (!ok) throw std::runtime_error("Ошибка в значении точности");
 
+		int method = ui->cmbMethod->currentIndex();
+
         Function function = m_parser.CreateFunction(expression.toUtf8().constData());
 
-        std::vector<double> roots;
+		std::vector<Root> roots = function.FindRoots(minX, maxX, epsilon, method);
 
-        double step = 0.01;
-		for (double x = minX; x < maxX; x += step) {
-            if (function(x) == 0) roots.push_back(x);
-			else if (function(x) * function(x + step) < 0) {
-                double root;
-
-                switch (method) {
-                case 0:
-                    root = function.FindRootIterations(x, x + step, epsilon);
-                    break;
-                case 1:
-                    root = function.FindRootDihotomy(x, x + step, epsilon);
-                    break;
-                case 2:
-                    root = function.FindRootNewton(x, x + step, epsilon);
-                    break;
-                default:
-                    break;
-                }
-
-                roots.push_back(root);
-            }
-        }
-
-        QString log = expression;
+		QString log = expression;
         expression += " = 0\nX: [" + QString::number(minX) + ", " + QString::number(maxX) + "], ";
-        expression += "Ɛ = " + QString::number(epsilon) + "\n";
+		expression += "Eps = " + QString::number(epsilon) + "\n";
         expression += "Метод: " + ui->cmbMethod->currentText() + "\n";
         expression += "Корни:\n";
 
-        for (auto root : roots) {
-            expression += "  " + QString::number(root) + "\n";
-        }
+		for (unsigned int i = 0; i < roots.size(); ++i) {
+			expression += "  " + QString::number(roots[i].x) + "\t(" + QString::number(roots[i].numIterations) + " итер.)\n";
+		}
 
         Log(expression);
     }
@@ -101,5 +85,12 @@ void MainWindow::OnButtonAboutClicked()
 
 void MainWindow::Log(const QString &text)
 {
-    ui->txtHistory->append("----------------\n" + text + "\n");
+	QString record = "----------------\n" + text + "\n";
+	ui->txtHistory->append(record);
+	QFile file("history.txt");
+	if (file.open(QIODevice::WriteOnly | QIODevice::Append)) {
+		QTextStream textStream(&file);
+		textStream.setCodec("UTF-8");
+		textStream << record;
+	}
 }
