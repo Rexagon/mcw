@@ -1,6 +1,7 @@
 #include "Function.h"
 
 #include <cmath>
+#include <iostream>
 
 double Function::Evaluate(double x)
 {
@@ -27,20 +28,20 @@ std::vector<Root> Function::FindRoots(double minX, double maxX, double epsilon, 
 		if (Evaluate(x) == 0) {
 			roots.push_back(Root(x, 1));
 		}
-		else if (Evaluate(x) * Evaluate(x + step) < 0) {
-			switch (method) {
+        else if (Evaluate(x) * Evaluate(x + step) < 0) {
+            switch (method) {
 			case 0:
-				roots.push_back(Iterations(x, x + step, epsilon));
+                roots.push_back(Iterations(x, x + step, epsilon));
 				break;
 			case 1:
-				roots.push_back(Dihotomy(x, x + step, epsilon));
+                roots.push_back(Dihotomy(x, x + step, epsilon));
 				break;
 			case 2:
-				roots.push_back(Newton(x, x + step, epsilon));
+                roots.push_back(Newton(x, x + step, epsilon));
 				break;
 			default:
 				break;
-			}
+            }
 		}
 	}
 
@@ -49,16 +50,17 @@ std::vector<Root> Function::FindRoots(double minX, double maxX, double epsilon, 
 
 Root Function::Iterations(double minX, double maxX, double epsilon)
 {
+
 	int numIterations = 0;
 
-	double lastX, lambda = 1.0 / Derivative(minX);
+    double f, lambda = 1.0 / Derivative(minX);
 
-	do {
-		lastX = minX;
-		minX = minX - lambda * Evaluate(minX);
-		numIterations++;
+    do {
+        f = Evaluate(minX);
+        minX = minX - lambda * f;
+        numIterations++;
 	}
-	while (std::fabs(minX - lastX) > epsilon);
+    while (std::fabs(f) > epsilon);
 
 	return Root(minX, numIterations);
 }
@@ -67,36 +69,38 @@ Root Function::Dihotomy(double minX, double maxX, double epsilon)
 {
 	int numIterations = 0;
 
-	double lastX, f;
+    double x, f;
 
 	do {
-		lastX = (minX + maxX) / 2.0;
-		f = Evaluate(lastX);
+        x = (minX + maxX) / 2.0;
+        f = Evaluate(x);
 
 		if (f * Evaluate(minX) < 0) {
-			maxX = lastX;
+            maxX = x;
 		}
 		else {
-			minX = lastX;
+            minX = x;
 		}
-		numIterations++;
-	} while (std::fabs(f) > epsilon);
+        numIterations++;
+    }
+    while (std::fabs(f) > epsilon);
 
-	return Root(lastX, numIterations);
+    return Root(x, numIterations);
 }
 
 Root Function::Newton(double minX, double maxX, double epsilon)
 {
 	int numIterations = 0;
 
-	double lastX;
+    double f;
 
 	do {
-		lastX = minX;
-		minX = lastX - Evaluate(lastX) / Derivative(lastX);
+        f = Evaluate(minX);
+        std::cout << minX << "\t" << f << "\n";
+        minX = minX - f / Derivative(minX);
 		numIterations++;
 	}
-	while(std::fabs(minX - lastX) > epsilon);
+    while(std::fabs(f) > epsilon);
 
 	return Root(minX, numIterations);
 }

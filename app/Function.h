@@ -8,10 +8,10 @@
 struct Root
 {
 	Root(double x, int numIterations) :
-		x(x), numIterations(numIterations) {}
+        x(x), numIterations(numIterations) {}
 
 	double x;
-	int numIterations;
+    int numIterations;
 };
 
 enum RootsFindingMethod

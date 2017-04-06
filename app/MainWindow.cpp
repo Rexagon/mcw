@@ -48,7 +48,7 @@ void MainWindow::OnButtonFindRootsClicked()
 
 		int method = ui->cmbMethod->currentIndex();
 
-        Function function = m_parser.CreateFunction(expression.toUtf8().constData());
+        Function function = m_parser.CreateFunction(expression.toStdString());
 
 		std::vector<Root> roots = function.FindRoots(minX, maxX, epsilon, method);
 
@@ -74,7 +74,8 @@ void MainWindow::OnButtonFindRootsClicked()
 
 void MainWindow::OnButtonAboutClicked()
 {
-	QMessageBox::about(nullptr, "О программе", R"(Курсовая про программированию за 2 семестр первого курса по программированию.
+    QMessageBox::about(nullptr,
+"О программе", R"(Курсовая про программированию за 2 семестр первого курса по программированию.
 Выполнил студент группы ИВБО-01-16 Калинин И.М.
 
 Эта программа находит корни любого уравнения, приведённого к виду f(x)=0 в заданном диапазоне с указанной точностью и методом.
