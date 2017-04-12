@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 class Token
@@ -55,7 +56,10 @@ public:
 	NumberToken(double value, const std::string& token = std::string()) : 
 		Token(Type::Number, token), m_value(value) {}
 
-	NumberToken(const std::string& value, const std::string& token = std::string()) : Token(Type::Number, token), m_value(std::atof(value.c_str())) {}
+    NumberToken(std::string value, const std::string& token = std::string()) : Token(Type::Number, token) {
+        std::istringstream line(value);
+        line >> m_value;
+    }
 
 	double GetValue() const override { return m_value; }
 
