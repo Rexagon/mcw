@@ -1,11 +1,14 @@
-QT      += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
-TARGET = app
 TEMPLATE = app
 
+TARGET	= mcw
+QT      += core gui widgets
+CONFIG  += c++14
+
 DEFINES += QT_DEPRECATED_WARNINGS
+
+DESTDIR	= ../../build
+OBJECTS_DIR = obj
+MOC_DIR = obj
 
 SOURCES += \
     main.cpp \
@@ -20,5 +23,3 @@ HEADERS += \
     MainWindow.h
 
 FORMS   += MainWindow.ui
-
-CONFIG  += c++14
